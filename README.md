@@ -126,6 +126,18 @@ number of failures like this:
       
 # FAQ #
 
+### Searching through the codebase is confusing -- How can I generate ctags for easy code navigation? ###
+
+Located in `boom-template/scripts/` is a quick ctags script called `gen-tags.sh` to help parse the codebase for
+relevant tags to use with compatible editors. To generate tags run
+
+    # from the boom-template directory
+    ./scripts/gen-tags.sh
+
+This should create a `tags` file in the `boom-template` directory for you to use!
+
+Note that this script requires Exuberant Ctags.
+
 ### Git submodules are confusing -- how do I update to the latest BOOM? ###
 
 The [boom](https://github.com/riscv-boom/riscv-boom) and
