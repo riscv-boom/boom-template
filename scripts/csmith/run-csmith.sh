@@ -76,7 +76,7 @@ run_once () {
         echo "[$1]  Vpd of error file:     $OUTPUT_DIR/$TEST_NAME-$1-$2.vpd"
         echo "[$1]  Simulator output file: $OUTPUT_DIR/$TEST_NAME-$1-$2.sim.out"
         echo "[$1]  Simulator log file:    $OUTPUT_DIR/$TEST_NAME-$1-$2.sim.log"
-        exit 1
+        kill_group
     else
         echo "[$1] Simulator and spike agree."
         rm $OUTPUT_DIR/$TEST_NAME-$1-$2.bin $OUTPUT_DIR/$TEST_NAME-$1-$2.host.out $OUTPUT_DIR/$TEST_NAME-$1-$2.c $OUTPUT_DIR/$TEST_NAME-$1-$2.riscv $OUTPUT_DIR/$TEST_NAME-$1-$2.spike.out $OUTPUT_DIR/$TEST_NAME-$1-$2.spike.log $OUTPUT_DIR/$TEST_NAME-$1-$2.sim.out
@@ -124,6 +124,7 @@ do
     esac
     shift
 done
+
 # Start of script
 if [ -z "$SIM" ]; then
     echo "Forgot simulator binary."
