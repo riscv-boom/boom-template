@@ -120,13 +120,14 @@ do
                         SEED=$1
                         ;;
         -h | --help )   usage
-                        exit 1
+                        return 0
     esac
     shift
 done
 # Start of script
 if [ -z "$SIM" ]; then
     echo "Forgot simulator binary."
+    usage
     exit 1
 fi
 
