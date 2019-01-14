@@ -1,5 +1,5 @@
 # Script to run the csmith random test generator multiple times
-# 
+#
 # Usage:
 #     ./run-csmith.sh SIMULATOR_BINARY [RUN_AMT] [PARALLEL_INSTANCES]
 #         RUN_AMT is the amount of times to run the csmith test
@@ -8,9 +8,9 @@
 
 TEST_NAME=test
 SIM=$1
-RUN_AMT=$2
-P_INST=$3
-INF=false
+RUN_AMT="${RUN_AMT:--1}"
+P_INST="${P_INST:-1}"
+
 
 # Make output directory
 OUTPUT_DIR=output
@@ -27,7 +27,7 @@ kill_group(){
 
 # Run the csmith test once
 run_once () {
-    SEED=$(date +%m%d%Y%H%M%S%N)
+    SEED=$(od -N 4 -t uL -An /dev/urandom | tr -d " ")
     echo "[$1] Running csmith test with seed=$SEED"
     csmith --seed $SEED > $OUTPUT_DIR/${TEST_NAME}-$1-$SEED.c
 
@@ -52,7 +52,7 @@ run_once () {
         rm $OUTPUT_DIR/${TEST_NAME}-$1-$SEED.bin $OUTPUT_DIR/${TEST_NAME}-$1-$SEED.host.out $OUTPUT_DIR/${TEST_NAME}-$1-$SEED.c $OUTPUT_DIR/${TEST_NAME}-$1-$SEED.riscv $OUTPUT_DIR/${TEST_NAME}-$1-$SEED.spike.out $OUTPUT_DIR/${TEST_NAME}-$1-$SEED.spike.log
         return 0
     fi
-    
+
     # Compare x86-64 and Spike
     cmp -s $OUTPUT_DIR/${TEST_NAME}-$1-$SEED.spike.out $OUTPUT_DIR/${TEST_NAME}-$1-$SEED.host.out
     RV=$?
@@ -81,7 +81,7 @@ run_once () {
 }
 
 run() {
-    if [ $INF == true ]; then
+    if [ $RUN_AMT == -1 ]; then
         while true;
         do
             run_once $1
@@ -100,17 +100,8 @@ if [ -z "$SIM" ]; then
     exit 1
 fi
 
-if [ -z "$RUN_AMT" ]; then
-    echo "Defaulting to infinite runs."
-    INF=true
-fi
 
-if [ -z "$P_INST" ]; then
-    echo "Defaulting to 1 instance."
-    P_INST=1
-fi
-
-if [ $INF == true ]; then
+if [ $RUN_AMT == -1 ]; then
     echo "Spawning $P_INST instances, running csmith infinite times"
 else
     echo "Spawning $P_INST instances, running csmith $RUN_AMT times"
@@ -118,6 +109,7 @@ fi
 
 for i in `seq 1 $P_INST`;
 do
+
     run $i &
 done
 wait
