@@ -1,0 +1,4 @@
+.gitignore
+csmith/*
+output/*
+platform.info
