@@ -123,6 +123,13 @@ You can run a nightly test, which runs for a set amount of time or a set
 number of failures like this:
 
     make rnight R_SIM=../vsim/simv-boom.system-BoomConfig OPTIONS="-C config/default.config -t 5 -m 30"
+
+Additionally, in `scripts/csmith` is a script to run auto-generated csmith
+tests. This can be invoked like this:
+
+    cd scripts/csmith
+    ./install-csmith.sh
+    ./run-csmith.sh VERILATOR_SIM [NUMBER_OF_CSMITH_TESTS] [NUM_OF_PARALLEL_INSTANCES]
       
 # FAQ #
 
