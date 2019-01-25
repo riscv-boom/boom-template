@@ -128,8 +128,8 @@ Additionally, in `scripts/csmith` is a script to run auto-generated csmith
 tests. This can be invoked like this:
 
     cd scripts/csmith
-    ./install-csmith.sh
-    ./run-csmith.sh VERILATOR_SIM [NUMBER_OF_CSMITH_TESTS] [NUM_OF_PARALLEL_INSTANCES]
+    ./install-csmith.sh # installs csmith to $RISCV
+    ./run-csmith.sh --sim VERILATOR_SIM [--run NUMBER_OF_CSMITH_TESTS] [--parallel NUM_OF_PARALLEL_INSTANCES]
       
 # FAQ #
 
