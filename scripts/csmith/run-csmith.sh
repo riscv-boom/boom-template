@@ -91,8 +91,8 @@ run_once () {
     RV=$?
     if [ $RV -ne 0 ]; then
         echo "[$1] Simulator produced wrong result."
-        if [ ! $NDEBUG ]; then
-            if [ $WDEBUG_EXT ]; then
+        if [ $NDEBUG == false ]; then
+            if [ $WDEBUG_EXT == true ]; then
                 ${SIM}-debug $BASE_NAME.riscv +verbose +vcdplusfile=$BASE_NAME.vpd 1> $BASE_NAME.sim.out 2> $BASE_NAME.sim.log
             else
                 $SIM $BASE_NAME.riscv +verbose +vcdplusfile=$BASE_NAME.vpd 1> $BASE_NAME.sim.out 2> $BASE_NAME.sim.log
