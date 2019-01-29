@@ -5,6 +5,8 @@ SIM=$1
 RUN_AMT=-1
 P_INST=1
 SEED=-1
+WDEBUG_EXT=false
+NDEBUG=false
 
 # Make output directory
 OUTPUT_DIR=output
@@ -12,7 +14,7 @@ SRC_DIR=sources
 mkdir -p output
 
 usage(){
-    echo "run-csmith.sh --sim SIM_BINARY [--run RUN_AMT] [--parallel PARALLEL_INSTANCES] [--seed SEED]"
+    echo "run-csmith.sh --sim SIM_BINARY [--run RUN_AMT] [--parallel PARALLEL_INSTANCES] [--seed SEED] [--withdebugext] [--nodebug]"
     echo "    --sim -s SIM_BINARY                   is the simulator to test spike against"
     echo "    --run -r RUN_AMT                      is the amount of times to run the csmith tests"
     echo "                                          defaults to infinity"
@@ -20,6 +22,10 @@ usage(){
     echo "                                          defaults to one instance"
     echo "    --seed -e SEED                        runs a single test with the seed specified"
     echo "                                          ignores all other parameters"
+    echo "    --withdebugext -d                     run debug version of simulator (used for when"
+    echo "                                          main sim is not debug version)"
+    echo "                                          (just appends -debug to sim name)"
+    echo "    --nodebug -n                          just error when there is a sim mismatch (no vpd)"
 }
 
 # Exit everything on one ctrl+c
@@ -73,15 +79,28 @@ run_once () {
     fi
 
     # Compare simulator output versus spike
-    $SIM $BASE_NAME.riscv 1> $BASE_NAME.sim.out
+    timeout 15m $SIM $BASE_NAME.riscv 1> $BASE_NAME.sim.out
+    RV=$?
+    if [ $RV == 124 ]; then
+        echo "[$1] Simulator timed out. Discard and start over."
+        rm $BASE_NAME.bin $BASE_NAME.host.out $BASE_NAME.c $BASE_NAME.riscv $BASE_NAME.spike.out $BASE_NAME.spike.log $BASE_NAME.sim.out
+        return 0
+    fi
+
     cmp -s $BASE_NAME.sim.out $BASE_NAME.spike.out
     RV=$?
     if [ $RV -ne 0 ]; then
         echo "[$1] Simulator produced wrong result."
-        $SIM $BASE_NAME.riscv +verbose +vcdplusfile=$BASE_NAME.vpd 1> $BASE_NAME.sim.out 2> $BASE_NAME.sim.log
-        echo "[$1]  Vpd of error file:     $BASE_NAME.vpd"
-        echo "[$1]  Simulator output file: $BASE_NAME.sim.out"
-        echo "[$1]  Simulator log file:    $BASE_NAME.sim.log"
+        if [ ! $NDEBUG ]; then
+            if [ $WDEBUG_EXT ]; then
+                ${SIM}-debug $BASE_NAME.riscv +verbose +vcdplusfile=$BASE_NAME.vpd 1> $BASE_NAME.sim.out 2> $BASE_NAME.sim.log
+            else
+                $SIM $BASE_NAME.riscv +verbose +vcdplusfile=$BASE_NAME.vpd 1> $BASE_NAME.sim.out 2> $BASE_NAME.sim.log
+            fi
+            echo "[$1]  Vpd of error file:     $BASE_NAME.vpd"
+            echo "[$1]  Simulator output file: $BASE_NAME.sim.out"
+            echo "[$1]  Simulator log file:    $BASE_NAME.sim.log"
+        fi
         kill_group
     else
         echo "[$1] Simulator and spike agree."
@@ -119,20 +138,26 @@ run() {
 while [ "$1" != "" ];
 do
     case $1 in
-        -s | --sim )    shift
-                        SIM=$1
-                        ;;
-        -r | --run )    shift
-                        RUN_AMT=$1
-                        ;;
+        -s | --sim )        shift
+                            SIM=$1
+                            ;;
+        -r | --run )        shift
+                            RUN_AMT=$1
+                            ;;
         -p | --parallel )   shift
                             P_INST=$1
                             ;;
-        -e | --seed )   shift
-                        SEED=$1
-                        ;;
-        -h | --help )   usage
-                        exit 0
+        -e | --seed )       shift
+                            SEED=$1
+                            ;;
+        --withdebugext | -d )  shift
+                            WDEBUG_EXT=true
+                            ;;
+        --nodebug | -n )    shift
+                            NDEBUG=true
+                            ;;
+        -h | --help )       usage
+                            exit 0
     esac
     shift
 done
