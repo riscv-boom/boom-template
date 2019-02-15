@@ -1,4 +1,3 @@
-/Makefrag.pkgs
 target
 *.jar
 *.stamp
