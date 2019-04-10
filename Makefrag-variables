@@ -41,13 +41,13 @@ CONF_FILE = $(build_dir)/$(long_name).conf
 #########################################################################################
 # sbt launch command
 #########################################################################################
-SBT ?= java -Xmx2G -Xss8M -jar $(ROCKETCHIP_DIR)/sbt-launch.jar ++2.12.4
+SBT ?= java -Xmx8G -Xss8M -jar $(ROCKETCHIP_DIR)/sbt-launch.jar ++2.12.4
 
 #########################################################################################
 # firrtl variables
 #########################################################################################
 FIRRTL_JAR ?= $(ROCKETCHIP_DIR)/firrtl/utils/bin/firrtl.jar
-FIRRTL ?= java -Xmx2G -Xss8M -cp "$(FIRRTL_JAR)":"$(ROCKET_CLASSES)" firrtl.Driver
+FIRRTL ?= java -Xmx8G -Xss8M -cp "$(FIRRTL_JAR)":"$(ROCKET_CLASSES)" firrtl.Driver
 EXTRA_FIRRTL_ARGS ?=
 
 #########################################################################################
@@ -62,7 +62,7 @@ VLSI_MEM_GEN ?= $(base_dir)/rocket-chip/scripts/vlsi_mem_gen
 mem_gen = $(VLSI_MEM_GEN)
 
 #########################################################################################
-# bootrom variable 
+# bootrom variable
 # TODO: BOOTROM specified only for dependence tracking.
 #       remove this as we may choose to use different bootroms?
 #       or can we make a dependency rule that searches for any and all bootroms in this project?
