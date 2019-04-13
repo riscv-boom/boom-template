@@ -75,6 +75,7 @@ bootrom_img = $(base_dir)/rocket-chip/bootrom/bootrom.img
 sim_vsrcs = \
 	$(VERILOG_FILE) \
 	$(base_dir)/rocket-chip/src/main/resources/vsrc/AsyncResetReg.v \
+	$(base_dir)/rocket-chip/src/main/resources/vsrc/EICG_wrapper.v \
 
 sim_csrcs = \
 	$(base_dir)/rocket-chip/src/main/resources/csrc/SimDTM.cc \
