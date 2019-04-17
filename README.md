@@ -32,10 +32,10 @@ You can find more information about BOOM here:
 The submodules and subdirectories for the project template are organized as
 follows.
 
+ * bootrom - points to the bootroms provided by rocket-chip
  * rocket-chip - contains code for the RocketChip generator, Chisel HCL, and FIRRTL
  * boom - contains code for the BOOM core and tile.
  * scripts - bash scripts for initializing repo, building RISC-V toolchain
- * testchipip - contains the serial adapter, block device, and associated verilog and C++ code
  * verisim - directory in which Verilator simulations are compiled and run
  * vsim - directory in which Synopsys VCS simulations are compiled and run
  * src/main/scala - scala source files for your project extension can go here
