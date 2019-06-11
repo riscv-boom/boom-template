@@ -331,7 +331,7 @@ test binary directly (and magically) into its target memory. There is no
 invocation of the Debug specification to do this.
 
 Eventually, BOOM and spike will converge after they have each loaded the
-test binary into their memories. They will again diverge on ocassion to
+test binary into their memories. They will again diverge on occasion to
 send proxy syscalls to the host, spinning for indeterminate amounts of
 time while waiting for a `fromhost` message (by repeatedly reading an
 agreed-upon `fromhost` address in memory).
